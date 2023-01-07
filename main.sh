@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # Rotate-and-Render
-sh randr.sh $1
+# 1. move images to 3ddfa/example/Images
+# 2. generate 3ddfa/example/file_list.txt
+# 3. bash experiments/v100_test.sh
 
 # GFPGAN
-sh gfpgan.sh randr_results
-
-# Finish
-mv gfpgan_results output
+cd GFPGAN
+python inference_gfpgan.py -i ../randr_results -o ../output -v 1.3 -s 2
+cd ..
