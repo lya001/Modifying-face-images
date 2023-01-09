@@ -14,5 +14,5 @@ pip install realesrgan
 # Download pre-trained model
 wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth -P experiments/pretrained_models
 
-# cleanup
+# finish
 cd ..
