@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # Rotate-and-Render
-# 1. move images to 3ddfa/example/Images
-mv $1/* Rotate-and-Render/3ddfa/example/Images
+# 1. copy images to 3ddfa/example/Images
+rm -f Rotate-and-Render/3ddfa/example/Images/*
+cp $1/* Rotate-and-Render/3ddfa/example/Images
 # 2. generate 3ddfa/example/file_list.txt
 cd Rotate-and-Render/3ddfa/example/Images
 ls > ../file_list.txt
