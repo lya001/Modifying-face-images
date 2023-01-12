@@ -4,7 +4,7 @@
 
 Aims to create an end-to-end framework to prepare a face image for avatar generation, which involves blind face restoration, face frontalization and facial expression manipulation.
 
-### Usage
+## Usage
 1. `sh setup.sh`
 2. `sh main.sh`, passing the path to images as a parameter, e.g. `sh main.sh input`
 
