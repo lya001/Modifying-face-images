@@ -11,4 +11,4 @@ Aims to create an end-to-end framework to prepare a face image for avatar genera
 
 Results will be saved in Modifying-face-images/output.
 
-If cannot run locally, could submit `run.sh` to the DoC GPU cluster.
+If cannot run locally, could submit `run.sh` to the Imperial DoC GPU cluster.
