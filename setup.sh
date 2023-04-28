@@ -3,3 +3,5 @@
 sh expr_setup.sh
 sh randr_setup.sh
 sh gfpgan_setup.sh
+
+pip install pyqt6
