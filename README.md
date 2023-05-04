@@ -7,6 +7,6 @@ Aims to create an end-to-end framework to prepare a face image for avatar genera
 ## Usage
 1. To set up the environment, do `sh setup.sh`
 2. For a Graphical User Interface, do `python3 app/app.py`
-3. For command-line batch processing, do `sh inference.sh`, passing the path to images directory as a parameter, e.g. `sh inference.sh input`
+3. For command-line batch processing, do `sh inference.sh`, passing the path to images directory as a parameter, e.g. `sh inference.sh ./input`
 
 If cannot run locally, could submit `run.sh` to the Imperial DoC GPU cluster.
