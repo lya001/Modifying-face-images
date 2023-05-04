@@ -74,6 +74,9 @@ class Window(QWidget):
         self.neutral_button.setEnabled(False)
         self.features_layout.addWidget(self.neutral_button)
 
+        # create folder for intermediate results
+        os.mkdir('./app/results')
+
         # display
         self.setLayout(self.main_layout)
         self.show()
@@ -161,9 +164,7 @@ class Window(QWidget):
 
     # override closeEvent() to clear intermediate results
     def closeEvent(self, event):
-        files = glob.glob('./app/results/*')
-        for f in files:
-            os.remove(f)
+        shutil.rmtree('./app/results')
 
 if __name__ == '__main__':
     app = QApplication([])
