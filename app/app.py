@@ -1,4 +1,5 @@
 from PyQt6.QtWidgets import *
+from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 
 import subprocess
@@ -43,13 +44,13 @@ class Window(QWidget):
         self.image_buttons_layout.addWidget(self.save_button)
 
         self.undo_button = QPushButton('')
-        self.undo_button.setIcon(QIcon('./app/icons/undo.svg')) # flaticon.com
+        self.undo_button.setIcon(QIcon('./app/resources/undo.svg')) # flaticon.com
         self.undo_button.pressed.connect(self.undo)
         self.undo_button.setEnabled(False)
         self.image_buttons_layout.addWidget(self.undo_button)
 
         self.redo_button = QPushButton('')
-        self.redo_button.setIcon(QIcon('./app/icons/redo.svg')) # flaticon.com
+        self.redo_button.setIcon(QIcon('./app/resources/redo.svg')) # flaticon.com
         self.redo_button.pressed.connect(self.redo)
         self.redo_button.setEnabled(False)
         self.image_buttons_layout.addWidget(self.redo_button)
@@ -74,8 +75,17 @@ class Window(QWidget):
         self.neutral_button.setEnabled(False)
         self.features_layout.addWidget(self.neutral_button)
 
+        # process for performing inference
+        self.process = None
+
         # create folder for intermediate results
-        os.mkdir('./app/results')
+        path = './app/results'
+        if os.path.exists(path):
+            files = glob.glob(path + '/*')
+            for f in files:
+                os.remove(f)
+        else:
+            os.mkdir('./app/results')
 
         # display
         self.setLayout(self.main_layout)
@@ -127,40 +137,63 @@ class Window(QWidget):
         self.redo_button.setEnabled(self.current_index < len(self.file_names) - 1)
 
     def restore(self):
-        new_file_name = str(self.current_index + 1) + '.png'
-        subprocess.run(['sh', './app/features/restore.sh', self.file_names[self.current_index], new_file_name])
-        self.current_index += 1
-        self.file_names = self.file_names[:self.current_index]
-        self.file_names.append('./app/results/' + new_file_name)
-        self.image_label.setPixmap(QPixmap(self.file_names[self.current_index]))
+        # pause and display loading screen
+        self.disable_all_buttons()
+        movie = QMovie('./app/resources/icons8-sand-timer.gif') # icons8.com
+        self.image_label.setMovie(movie)
+        movie.start()
 
-        # adjust button availabilities
-        self.undo_button.setEnabled(True)
-        self.redo_button.setEnabled(False)
-
+        # perform inference
+        self.p = QProcess()
+        self.p.finished.connect(self.end_spinner)
+        self.p.start('sh', ['./app/features/restore.sh', self.file_names[self.current_index], str(self.current_index + 1) + '.png'])
+        
     def rotate(self):
-        new_file_name = str(self.current_index + 1) + '.png'
-        subprocess.run(['sh', './app/features/rotate.sh', self.file_names[self.current_index], new_file_name])
-        self.current_index += 1
-        self.file_names = self.file_names[:self.current_index]
-        self.file_names.append('./app/results/' + new_file_name)
-        self.image_label.setPixmap(QPixmap(self.file_names[self.current_index]))
+        # pause and display loading screen
+        self.disable_all_buttons()
+        movie = QMovie('./app/resources/icons8-sand-timer.gif') # icons8.com
+        self.image_label.setMovie(movie)
+        movie.start()
 
-        # adjust button availabilities
-        self.undo_button.setEnabled(True)
-        self.redo_button.setEnabled(False)
+        # perform inference
+        self.p = QProcess()
+        self.p.finished.connect(self.end_spinner)
+        self.p.start('sh', ['./app/features/rotate.sh', self.file_names[self.current_index], str(self.current_index + 1) + '.png'])
 
     def neutral(self):
-        new_file_name = str(self.current_index + 1) + '.png'
-        subprocess.run(['sh', './app/features/neutral.sh', self.file_names[self.current_index], new_file_name])
+        # pause and display loading screen
+        self.disable_all_buttons()
+        movie = QMovie('./app/resources/icons8-sand-timer.gif') # icons8.com
+        self.image_label.setMovie(movie)
+        movie.start()
+
+        # perform inference
+        self.p = QProcess()
+        self.p.finished.connect(self.end_spinner)
+        self.p.start('sh', ['./app/features/neutral.sh', self.file_names[self.current_index], str(self.current_index + 1) + '.png'])
+
+    def disable_all_buttons(self):
+        self.select_button.setEnabled(False)
+        self.save_button.setEnabled(False)
+        self.undo_button.setEnabled(False)
+        self.redo_button.setEnabled(False)
+        self.restore_button.setEnabled(False)
+        self.rotate_button.setEnabled(False)
+        self.neutral_button.setEnabled(False)
+
+    def end_spinner(self):
         self.current_index += 1
         self.file_names = self.file_names[:self.current_index]
-        self.file_names.append('./app/results/' + new_file_name)
+        self.file_names.append('./app/results/' + str(self.current_index) + '.png')
         self.image_label.setPixmap(QPixmap(self.file_names[self.current_index]))
-        
+
         # adjust button availabilities
+        self.select_button.setEnabled(True)
+        self.save_button.setEnabled(True)
         self.undo_button.setEnabled(True)
-        self.redo_button.setEnabled(False)
+        self.restore_button.setEnabled(True)
+        self.rotate_button.setEnabled(True)
+        self.neutral_button.setEnabled(True)
 
     # override closeEvent() to clear intermediate results
     def closeEvent(self, event):
