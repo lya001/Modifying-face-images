@@ -4,7 +4,7 @@
 
 Aims to create an end-to-end framework to prepare a face image for avatar generation, which involves blind face restoration, face frontalization and facial expression manipulation.
 
-Demo: [demo.webm](https://user-images.githubusercontent.com/60819523/236635478-6900c366-aa47-4d0c-a2d3-47ab93f68940.webm)
+Demo:[demo.webm](https://user-images.githubusercontent.com/60819523/236635676-52934956-ee53-4318-937e-49fb3d3fa4ae.webm)
 
 ## Usage
 1. To set up the environment, do `sh setup.sh`
