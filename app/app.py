@@ -15,7 +15,7 @@ class Window(QWidget):
         self.setWindowTitle('Modifying Face Images')
 
         # window size
-        self.resize(800, 500)
+        self.setFixedSize(1000, 800)
 
         # layouts
         self.main_layout = QHBoxLayout()
@@ -57,6 +57,7 @@ class Window(QWidget):
         
         # image preview
         self.image_label = QLabel()
+        self.image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.image_layout.addWidget(self.image_label)
 
         # feature buttons
@@ -103,7 +104,7 @@ class Window(QWidget):
             # display selected file
             self.file_names = ['./app/results/0.png']
             self.current_index = 0
-            self.image_label.setPixmap(QPixmap(file_name))
+            self.image_label.setPixmap(QPixmap(file_name).scaled(self.image_label.width(), self.image_label.height(), Qt.AspectRatioMode.KeepAspectRatio))
             
             # set button availabilities
             self.save_button.setEnabled(True)
@@ -122,7 +123,7 @@ class Window(QWidget):
 
     def undo(self):
         self.current_index -= 1
-        self.image_label.setPixmap(QPixmap(self.file_names[self.current_index]))
+        self.image_label.setPixmap(QPixmap(self.file_names[self.current_index]).scaled(self.image_label.width(), self.image_label.height(), Qt.AspectRatioMode.KeepAspectRatio))
 
         # adjust button availabilities
         self.undo_button.setEnabled(self.current_index > 0)
@@ -130,7 +131,7 @@ class Window(QWidget):
 
     def redo(self):
         self.current_index += 1
-        self.image_label.setPixmap(QPixmap(self.file_names[self.current_index]))
+        self.image_label.setPixmap(QPixmap(self.file_names[self.current_index]).scaled(self.image_label.width(), self.image_label.height(), Qt.AspectRatioMode.KeepAspectRatio))
 
         # adjust button availabilities
         self.undo_button.setEnabled(True)
@@ -185,7 +186,7 @@ class Window(QWidget):
         self.current_index += 1
         self.file_names = self.file_names[:self.current_index]
         self.file_names.append('./app/results/' + str(self.current_index) + '.png')
-        self.image_label.setPixmap(QPixmap(self.file_names[self.current_index]))
+        self.image_label.setPixmap(QPixmap(self.file_names[self.current_index]).scaled(self.image_label.width(), self.image_label.height(), Qt.AspectRatioMode.KeepAspectRatio))
 
         # adjust button availabilities
         self.select_button.setEnabled(True)
