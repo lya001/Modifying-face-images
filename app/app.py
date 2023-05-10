@@ -23,12 +23,16 @@ class Window(QWidget):
         self.image_layout = QVBoxLayout()
         self.image_buttons_layout = QHBoxLayout()
         self.image_layout.addLayout(self.image_buttons_layout)
-        self.image_preview_layout = QGridLayout()
+        self.image_preview_layout = QHBoxLayout()
+        self.image_original_layout = QVBoxLayout()
+        self.image_preview_layout.addLayout(self.image_original_layout)
+        self.image_current_layout = QVBoxLayout()
+        self.image_preview_layout.addLayout(self.image_current_layout)
         self.image_layout.addLayout(self.image_preview_layout)
-        self.main_layout.addLayout(self.image_layout)
+        self.main_layout.addLayout(self.image_layout, 5)
         
         self.features_layout = QVBoxLayout()
-        self.main_layout.addLayout(self.features_layout)
+        self.main_layout.addLayout(self.features_layout, 1)
 
         # image selection buttons
         self.file_names = []
@@ -56,9 +60,18 @@ class Window(QWidget):
         self.image_buttons_layout.addWidget(self.redo_button)
         
         # image preview
-        self.image_label = QLabel()
-        self.image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.image_layout.addWidget(self.image_label)
+        self.image_original_label = QLabel()
+        self.image_original_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.image_original_layout.addWidget(self.image_original_label, 10)
+        original_text = QLabel('Original')
+        original_text.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
+        self.image_original_layout.addWidget(original_text, 1)
+        self.image_current_label = QLabel()
+        self.image_current_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.image_current_layout.addWidget(self.image_current_label, 10)
+        current_text = QLabel('Current')
+        current_text.setAlignment(Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop)
+        self.image_current_layout.addWidget(current_text, 1)
 
         # feature buttons
         self.restore_button = QPushButton('Restore Face Detail')
@@ -104,8 +117,9 @@ class Window(QWidget):
             # display selected file
             self.file_names = ['./app/results/0.png']
             self.current_index = 0
-            self.image_label.setPixmap(QPixmap(file_name).scaled(self.image_label.width(), self.image_label.height(), Qt.AspectRatioMode.KeepAspectRatio))
-            
+            self.image_original_label.setPixmap(QPixmap(file_name).scaled(self.image_original_label.width(), self.image_original_label.height(), Qt.AspectRatioMode.KeepAspectRatio))
+            self.image_current_label.setPixmap(QPixmap(file_name).scaled(self.image_current_label.width(), self.image_current_label.height(), Qt.AspectRatioMode.KeepAspectRatio))
+
             # set button availabilities
             self.save_button.setEnabled(True)
             self.undo_button.setEnabled(False)
@@ -123,7 +137,7 @@ class Window(QWidget):
 
     def undo(self):
         self.current_index -= 1
-        self.image_label.setPixmap(QPixmap(self.file_names[self.current_index]).scaled(self.image_label.width(), self.image_label.height(), Qt.AspectRatioMode.KeepAspectRatio))
+        self.image_current_label.setPixmap(QPixmap(self.file_names[self.current_index]).scaled(self.image_current_label.width(), self.image_current_label.height(), Qt.AspectRatioMode.KeepAspectRatio))
 
         # adjust button availabilities
         self.undo_button.setEnabled(self.current_index > 0)
@@ -131,7 +145,7 @@ class Window(QWidget):
 
     def redo(self):
         self.current_index += 1
-        self.image_label.setPixmap(QPixmap(self.file_names[self.current_index]).scaled(self.image_label.width(), self.image_label.height(), Qt.AspectRatioMode.KeepAspectRatio))
+        self.image_current_label.setPixmap(QPixmap(self.file_names[self.current_index]).scaled(self.image_current_label.width(), self.image_current_label.height(), Qt.AspectRatioMode.KeepAspectRatio))
 
         # adjust button availabilities
         self.undo_button.setEnabled(True)
@@ -141,7 +155,7 @@ class Window(QWidget):
         # pause and display loading screen
         self.disable_all_buttons()
         movie = QMovie('./app/resources/icons8-sand-timer.gif') # icons8.com
-        self.image_label.setMovie(movie)
+        self.image_current_label.setMovie(movie)
         movie.start()
 
         # perform inference
@@ -153,7 +167,7 @@ class Window(QWidget):
         # pause and display loading screen
         self.disable_all_buttons()
         movie = QMovie('./app/resources/icons8-sand-timer.gif') # icons8.com
-        self.image_label.setMovie(movie)
+        self.image_current_label.setMovie(movie)
         movie.start()
 
         # perform inference
@@ -165,7 +179,7 @@ class Window(QWidget):
         # pause and display loading screen
         self.disable_all_buttons()
         movie = QMovie('./app/resources/icons8-sand-timer.gif') # icons8.com
-        self.image_label.setMovie(movie)
+        self.image_current_label.setMovie(movie)
         movie.start()
 
         # perform inference
@@ -186,7 +200,7 @@ class Window(QWidget):
         self.current_index += 1
         self.file_names = self.file_names[:self.current_index]
         self.file_names.append('./app/results/' + str(self.current_index) + '.png')
-        self.image_label.setPixmap(QPixmap(self.file_names[self.current_index]).scaled(self.image_label.width(), self.image_label.height(), Qt.AspectRatioMode.KeepAspectRatio))
+        self.image_current_label.setPixmap(QPixmap(self.file_names[self.current_index]).scaled(self.image_current_label.width(), self.image_current_label.height(), Qt.AspectRatioMode.KeepAspectRatio))
 
         # adjust button availabilities
         self.select_button.setEnabled(True)
