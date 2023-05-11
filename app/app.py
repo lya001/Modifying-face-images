@@ -60,6 +60,7 @@ class Window(QWidget):
         self.image_buttons_layout.addWidget(self.redo_button)
         
         # image preview
+        QImageReader.setAllocationLimit(0)
         self.image_original_label = QLabel()
         self.image_original_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.image_original_layout.addWidget(self.image_original_label, 10)
