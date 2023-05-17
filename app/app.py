@@ -75,6 +75,16 @@ class Window(QWidget):
         self.image_current_layout.addWidget(current_text, 1)
 
         # feature buttons
+        self.colorize_cf_button = QPushButton('Colorize (CodeFormer)')
+        self.colorize_cf_button.pressed.connect(self.colorize)
+        self.colorize_cf_button.setEnabled(False)
+        self.features_layout.addWidget(self.colorize_cf_button)
+
+        self.restore_cf_button = QPushButton('Restore Face Detail (CodeFormer)')
+        self.restore_cf_button.pressed.connect(self.restore_cf)
+        self.restore_cf_button.setEnabled(False)
+        self.features_layout.addWidget(self.restore_cf_button)
+
         self.restore_button = QPushButton('Restore Face Detail')
         self.restore_button.pressed.connect(self.restore)
         self.restore_button.setEnabled(False)
@@ -125,6 +135,8 @@ class Window(QWidget):
             self.save_button.setEnabled(True)
             self.undo_button.setEnabled(False)
             self.redo_button.setEnabled(False)
+            self.colorize_cf_button.setEnabled(True)
+            self.restore_cf_button.setEnabled(True)
             self.restore_button.setEnabled(True)
             self.rotate_button.setEnabled(True)
             self.neutral_button.setEnabled(True)
@@ -152,6 +164,30 @@ class Window(QWidget):
         self.undo_button.setEnabled(True)
         self.redo_button.setEnabled(self.current_index < len(self.file_names) - 1)
 
+    def colorize(self):
+        # pause and display loading screen
+        self.disable_all_buttons()
+        movie = QMovie('./app/resources/icons8-sand-timer.gif') # icons8.com
+        self.image_current_label.setMovie(movie)
+        movie.start()
+
+        # perform inference
+        self.p = QProcess()
+        self.p.finished.connect(self.end_loading_screen)
+        self.p.start('sh', ['./app/features/colorize.sh', self.file_names[self.current_index], str(self.current_index + 1) + '.png'])
+
+    def restore_cf(self):
+        # pause and display loading screen
+        self.disable_all_buttons()
+        movie = QMovie('./app/resources/icons8-sand-timer.gif') # icons8.com
+        self.image_current_label.setMovie(movie)
+        movie.start()
+
+        # perform inference
+        self.p = QProcess()
+        self.p.finished.connect(self.end_loading_screen)
+        self.p.start('sh', ['./app/features/restore_codeformer.sh', self.file_names[self.current_index], str(self.current_index + 1) + '.png'])
+
     def restore(self):
         # pause and display loading screen
         self.disable_all_buttons()
@@ -161,7 +197,7 @@ class Window(QWidget):
 
         # perform inference
         self.p = QProcess()
-        self.p.finished.connect(self.end_spinner)
+        self.p.finished.connect(self.end_loading_screen)
         self.p.start('sh', ['./app/features/restore.sh', self.file_names[self.current_index], str(self.current_index + 1) + '.png'])
         
     def rotate(self):
@@ -173,7 +209,7 @@ class Window(QWidget):
 
         # perform inference
         self.p = QProcess()
-        self.p.finished.connect(self.end_spinner)
+        self.p.finished.connect(self.end_loading_screen)
         self.p.start('sh', ['./app/features/rotate.sh', self.file_names[self.current_index], str(self.current_index + 1) + '.png'])
 
     def neutral(self):
@@ -185,7 +221,7 @@ class Window(QWidget):
 
         # perform inference
         self.p = QProcess()
-        self.p.finished.connect(self.end_spinner)
+        self.p.finished.connect(self.end_loading_screen)
         self.p.start('sh', ['./app/features/neutral.sh', self.file_names[self.current_index], str(self.current_index + 1) + '.png'])
 
     def disable_all_buttons(self):
@@ -193,11 +229,13 @@ class Window(QWidget):
         self.save_button.setEnabled(False)
         self.undo_button.setEnabled(False)
         self.redo_button.setEnabled(False)
+        self.colorize_cf_button.setEnabled(False)
+        self.restore_cf_button.setEnabled(False)
         self.restore_button.setEnabled(False)
         self.rotate_button.setEnabled(False)
         self.neutral_button.setEnabled(False)
 
-    def end_spinner(self):
+    def end_loading_screen(self):
         self.current_index += 1
         self.file_names = self.file_names[:self.current_index]
         self.file_names.append('./app/results/' + str(self.current_index) + '.png')
@@ -207,6 +245,8 @@ class Window(QWidget):
         self.select_button.setEnabled(True)
         self.save_button.setEnabled(True)
         self.undo_button.setEnabled(True)
+        self.colorize_cf_button.setEnabled(True)
+        self.restore_cf_button.setEnabled(True)
         self.restore_button.setEnabled(True)
         self.rotate_button.setEnabled(True)
         self.neutral_button.setEnabled(True)
