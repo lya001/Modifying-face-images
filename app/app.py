@@ -97,8 +97,9 @@ class Window(QWidget):
         self.neutral_button.setEnabled(False)
         self.features_layout.addWidget(self.neutral_button)
 
-        # process for performing inference
+        # process and flag for performing inference in subprocess
         self.process = None
+        self.process_error = False
 
         # create folder for intermediate results
         path = './app/results'
@@ -223,22 +224,34 @@ class Window(QWidget):
         self.neutral_button.setEnabled(False)
 
     def read_error(self):
-        print(self.process.readAllStandardError().data().decode())
+        message = self.process.readAllStandardError().data().decode()
+        #self.process.terminate()
+        self.process_error = True
+        #box = QMessageBox(icon, 'title', message)
+        box = QMessageBox()
+        box.setText(message)
+        box.exec()
 
     def end_loading_screen(self):
-        self.current_index += 1
-        self.file_names = self.file_names[:self.current_index]
-        self.file_names.append('./app/results/' + str(self.current_index) + '.png')
+        if not self.process_error:
+            self.current_index += 1
+            self.file_names = self.file_names[:self.current_index]
+            self.file_names.append('./app/results/' + str(self.current_index) + '.png')
         self.image_current_label.setPixmap(QPixmap(self.file_names[self.current_index]).scaled(self.image_current_label.width(), self.image_current_label.height(), Qt.AspectRatioMode.KeepAspectRatio))
 
         # adjust button availabilities
         self.select_button.setEnabled(True)
         self.save_button.setEnabled(True)
-        self.undo_button.setEnabled(True)
         self.colorize_button.setEnabled(True)
         self.restore_button.setEnabled(True)
         self.rotate_button.setEnabled(True)
         self.neutral_button.setEnabled(True)
+        if len(self.file_names) > 1:
+            self.undo_button.setEnabled(True)
+        
+        # reset process
+        self.process = None
+        self.process_error = False
 
     # override closeEvent() to clear intermediate results
     def closeEvent(self, event):
