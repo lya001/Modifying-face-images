@@ -168,9 +168,10 @@ class Window(QWidget):
         movie.start()
 
         # perform inference
-        self.p = QProcess()
-        self.p.finished.connect(self.end_loading_screen)
-        self.p.start('sh', ['./app/features/colorize.sh', self.file_names[self.current_index], str(self.current_index + 1) + '.png'])
+        self.process = QProcess()
+        self.process.readyReadStandardError.connect(self.read_error)
+        self.process.finished.connect(self.end_loading_screen)
+        self.process.start('sh', ['./app/features/colorize.sh', self.file_names[self.current_index], str(self.current_index + 1) + '.png'])
 
     def restore(self):
         # pause and display loading screen
@@ -180,9 +181,10 @@ class Window(QWidget):
         movie.start()
 
         # perform inference
-        self.p = QProcess()
-        self.p.finished.connect(self.end_loading_screen)
-        self.p.start('sh', ['./app/features/restore.sh', self.file_names[self.current_index], str(self.current_index + 1) + '.png'])
+        self.process = QProcess()
+        self.process.readyReadStandardError.connect(self.read_error)
+        self.process.finished.connect(self.end_loading_screen)
+        self.process.start('sh', ['./app/features/restore.sh', self.file_names[self.current_index], str(self.current_index + 1) + '.png'])
         
     def rotate(self):
         # pause and display loading screen
@@ -192,9 +194,10 @@ class Window(QWidget):
         movie.start()
 
         # perform inference
-        self.p = QProcess()
-        self.p.finished.connect(self.end_loading_screen)
-        self.p.start('sh', ['./app/features/rotate.sh', self.file_names[self.current_index], str(self.current_index + 1) + '.png'])
+        self.process = QProcess()
+        self.process.readyReadStandardError.connect(self.read_error)
+        self.process.finished.connect(self.end_loading_screen)
+        self.process.start('sh', ['./app/features/rotate.sh', self.file_names[self.current_index], str(self.current_index + 1) + '.png'])
 
     def neutral(self):
         # pause and display loading screen
@@ -204,9 +207,10 @@ class Window(QWidget):
         movie.start()
 
         # perform inference
-        self.p = QProcess()
-        self.p.finished.connect(self.end_loading_screen)
-        self.p.start('sh', ['./app/features/neutral.sh', self.file_names[self.current_index], str(self.current_index + 1) + '.png'])
+        self.process = QProcess()
+        self.process.readyReadStandardError.connect(self.read_error)
+        self.process.finished.connect(self.end_loading_screen)
+        self.process.start('sh', ['./app/features/neutral.sh', self.file_names[self.current_index], str(self.current_index + 1) + '.png'])
 
     def disable_all_buttons(self):
         self.select_button.setEnabled(False)
@@ -217,6 +221,9 @@ class Window(QWidget):
         self.restore_button.setEnabled(False)
         self.rotate_button.setEnabled(False)
         self.neutral_button.setEnabled(False)
+
+    def read_error(self):
+        print(self.process.readAllStandardError().data().decode())
 
     def end_loading_screen(self):
         self.current_index += 1
