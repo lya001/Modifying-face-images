@@ -99,7 +99,7 @@ class Window(QWidget):
 
         # process and flag for performing inference in subprocess
         self.process = None
-        self.process_error = False
+        self.error_log = ''
 
         # create folder for intermediate results
         path = './app/results'
@@ -225,15 +225,15 @@ class Window(QWidget):
 
     def read_error(self):
         message = self.process.readAllStandardError().data().decode()
-        #self.process.terminate()
-        self.process_error = True
-        #box = QMessageBox(icon, 'title', message)
-        box = QMessageBox()
-        box.setText(message)
-        box.exec()
+        self.error_log += message
+        self.process.terminate()
 
     def end_loading_screen(self):
-        if not self.process_error:
+        if self.error_log != '':
+            box = QMessageBox()
+            box.setText(self.error_log)
+            box.exec()
+        else:
             self.current_index += 1
             self.file_names = self.file_names[:self.current_index]
             self.file_names.append('./app/results/' + str(self.current_index) + '.png')
@@ -251,7 +251,7 @@ class Window(QWidget):
         
         # reset process
         self.process = None
-        self.process_error = False
+        self.error_log = ''
 
     # override closeEvent() to clear intermediate results
     def closeEvent(self, event):
