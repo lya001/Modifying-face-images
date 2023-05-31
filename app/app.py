@@ -226,7 +226,6 @@ class Window(QWidget):
     def read_error(self):
         message = self.process.readAllStandardError().data().decode()
         self.error_log += message
-        self.process.terminate()
 
     def end_loading_screen(self):
         if self.error_log != '':
