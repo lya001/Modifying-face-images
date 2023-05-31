@@ -228,14 +228,14 @@ class Window(QWidget):
         self.error_log += message
 
     def end_loading_screen(self):
-        if self.error_log != '':
-            box = QMessageBox()
-            box.setText(self.error_log)
-            box.exec()
-        else:
+        if os.path.exists('./app/results/' + str(self.current_index + 1) + '.png'):
             self.current_index += 1
             self.file_names = self.file_names[:self.current_index]
             self.file_names.append('./app/results/' + str(self.current_index) + '.png')
+        else:
+            box = QMessageBox()
+            box.setText(self.error_log)
+            box.exec()
         self.image_current_label.setPixmap(QPixmap(self.file_names[self.current_index]).scaled(self.image_current_label.width(), self.image_current_label.height(), Qt.AspectRatioMode.KeepAspectRatio))
 
         # adjust button availabilities
