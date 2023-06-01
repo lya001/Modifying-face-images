@@ -101,15 +101,6 @@ class Window(QWidget):
         self.process = None
         self.error_log = ''
 
-        # create folder for intermediate results
-        path = './app/results'
-        if os.path.exists(path):
-            files = glob.glob(path + '/*')
-            for f in files:
-                os.remove(f)
-        else:
-            os.mkdir('./app/results')
-
         # display
         self.setLayout(self.main_layout)
         self.show()
@@ -119,6 +110,15 @@ class Window(QWidget):
         
         # do nothing if cancelled file selection
         if file_name:
+
+            # create empty folder for intermediate results
+            path = './app/results'
+            if os.path.exists(path):
+                files = glob.glob(path + '/*')
+                for f in files:
+                    os.remove(f)
+            else:
+                os.mkdir('./app/results')
 
             # copy input image to results folder
             shutil.copyfile(file_name, './app/results/0.png')
