@@ -8,3 +8,5 @@ python inference.py
 cd ..
 mv -f Facial-Expression-Modifier/output/* Facial-Expression-Modifier/output/$2
 mv -f Facial-Expression-Modifier/output/$2 ./app/results
+rm -f Facial-Expression-Modifier/input/*
+rm -f Facial-Expression-Modifier/output/*

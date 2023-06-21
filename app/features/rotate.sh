@@ -17,3 +17,6 @@ cd ..
 # 5. rename and move results to ./app/results
 mv -f ./Rotate-and-Render/results/rs_model/example/orig/* ./Rotate-and-Render/results/rs_model/example/orig/$2
 mv -f ./Rotate-and-Render/results/rs_model/example/orig/$2 ./app/results
+rm -f ./Rotate-and-Render/3ddfa/example/Images/*
+rm -f ./Rotate-and-Render/results/rs_model/example/orig/*
+rm -f ./Rotate-and-Render/results/rs_model/example/aligned/*

@@ -228,6 +228,7 @@ class Window(QWidget):
         self.error_log += message
 
     def end_loading_screen(self):
+        # display error message if operation failed
         if os.path.exists('./app/results/' + str(self.current_index + 1) + '.png'):
             self.current_index += 1
             self.file_names = self.file_names[:self.current_index]
