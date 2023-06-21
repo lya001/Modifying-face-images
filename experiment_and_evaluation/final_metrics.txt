@@ -1,0 +1,21 @@
+restore:
+NIQE: 3.7977
+face verification: 98.53%
+
+rotate:
+NIQE: 4.1781
+face verification: 91.67%
+
+neutral:
+NIQE: 4.0997
+face verification: 91.49%
+
+both:
+NIQE: 4.1346
+face verification: 72.41%
+
+Execution Time (NVIDIA GeForce GTX 1080):
+group 1: 28s / 68 = 0.41s
+group 2: 3m15s / 36 = 5.42s
+group 3: 11m49s / 47 = 15.09s
+group 4: 9m56s / 29 = 20.55s
