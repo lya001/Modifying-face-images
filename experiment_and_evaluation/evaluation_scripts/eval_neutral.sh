@@ -18,6 +18,8 @@ cd ..
 cd CodeFormer
 python inference_codeformer.py -w 0.5 --input_path ../Facial-Expression-Modifier/output
 cd ..
+rm -f ./Facial-Expression-Modifier/input/*
+rm -f ./Facial-Expression-Modifier/output/*
 
 # rename files
 cd CodeFormer/results/output_0.5/restored_faces

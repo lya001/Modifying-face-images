@@ -33,6 +33,9 @@ cd ../../../../..
 cd CodeFormer
 python inference_codeformer.py -w 0.5 --input_path ../Rotate-and-Render/results/rs_model/example/orig
 cd ..
+rm -f Rotate-and-Render/3ddfa/example/Images/*
+rm -f Rotate-and-Render/results/rs_model/example/orig/*
+rm -f Rotate-and-Render/results/rs_model/example/aligned/*
 
 # rename files
 cd CodeFormer/results/orig_0.5/restored_faces
