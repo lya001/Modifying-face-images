@@ -1,15 +1,19 @@
 #!/bin/bash
 
-# GFPGAN
-mkdir -p gfpgan_results1
-cd GFPGAN
-python inference_gfpgan.py -i ../$1 -o ../gfpgan_results1 -v 1.3 -s 2
+# move images
+mkdir -p input
+\cp -f $1/* input
+
+# CodeFormer
+cd CodeFormer
+python inference_codeformer.py -w 0.5 --input_path ../input
 cd ..
 
 # Rotate-and-Render
 # 1. copy images to 3ddfa/example/Images
 rm -f Rotate-and-Render/3ddfa/example/Images/*
-cp gfpgan_results1/restored_faces/* Rotate-and-Render/3ddfa/example/Images
+\cp -f CodeFormer/results/input_0.5/restored_faces/* Rotate-and-Render/3ddfa/example/Images
+rm -rf CodeFormer/results
 # 2. generate 3ddfa/example/file_list.txt
 cd Rotate-and-Render/3ddfa/example/Images
 ls > ../file_list.txt
@@ -20,29 +24,49 @@ cd ..
 # 4. inference
 bash experiments/v100_test.sh
 cd ..
-# 5. move results to ./randr_results
-mkdir -p randr_results
-mv Rotate-and-Render/results/rs_model/example/orig/* randr_results
+# 5. rename files
+cd Rotate-and-Render/results/rs_model/example/orig
+for name in yaw_0.0_*
+do
+    newname="$(echo "$name" | cut -c9-)"
+    mv "$name" "$newname"
+done
+cd ../../../../..
 
-# GFPGAN
-mkdir -p gfpgan_results2
-cd GFPGAN
-python inference_gfpgan.py -i ../randr_results -o ../gfpgan_results2 -v 1.3 -s 2
+# CodeFormer
+cd CodeFormer
+python inference_codeformer.py -w 0.5 --input_path ../Rotate-and-Render/results/rs_model/example/orig
 cd ..
+rm -f Rotate-and-Render/3ddfa/example/Images/*
+rm -f Rotate-and-Render/results/rs_model/example/orig/*
+rm -f Rotate-and-Render/results/rs_model/example/aligned/*
 
-# Facial-Expression-Modifier
-rm -f Facial-Expression-Modifier/input/*
-cp gfpgan_results2/restored_faces/* Facial-Expression-Modifier/input
+# Neutral Expression
+rm -f ./Facial-Expression-Modifier/input/*
+rm -f ./Facial-Expression-Modifier/output/*
+\cp -f CodeFormer/results/orig_0.5/restored_faces/* ./Facial-Expression-Modifier/input
+rm -rf CodeFormer/results
 cd Facial-Expression-Modifier
 python inference.py
 cd ..
-mkdir -p expr_results
-mv Facial-Expression-Modifier/output/* expr_results
 
-# GFPGAN
-mkdir -p gfpgan_results3
-cd GFPGAN
-python inference_gfpgan.py -i ../expr_results -o ../gfpgan_results3 -v 1.3 -s 2
+# CodeFormer
+cd CodeFormer
+python inference_codeformer.py -w 0.5 --input_path ../Facial-Expression-Modifier/output
 cd ..
+rm -f ./Facial-Expression-Modifier/input/*
+rm -f ./Facial-Expression-Modifier/output/*
+
+## rename files
+cd CodeFormer/results/output_0.5/restored_faces
+for name in *.png
+do
+    newname="$(echo "$name" | rev | cut -c11- | rev)"
+    mv "$name" "$newname.png"
+done
+cd ../../../..
+
+# move images
 mkdir -p output
-cp gfpgan_results3/restored_faces/* output
+\cp -f CodeFormer/results/output_0.5/restored_faces/* output
+rm -rf CodeFormer/results
