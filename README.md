@@ -2,9 +2,11 @@
 
 ### Project Title: Enhancing and modifying low-quality face images for creating good quality 3D avatars
 
+<img width="1218" alt="visualization" src="https://github.com/lya001/Modifying-face-images/assets/60819523/ba1be2c7-fe91-4db4-9f0f-2453af8287e1">
+
 Aims to create an end-to-end framework to prepare a face image for avatar generation, which involves blind face restoration, face frontalization and facial expression manipulation. A graphical user interface was also built for a more interactive experience.
 
-Demo: [demo.webm](https://user-images.githubusercontent.com/60819523/236635676-52934956-ee53-4318-937e-49fb3d3fa4ae.webm)
+![gui_processing](https://github.com/lya001/Modifying-face-images/assets/60819523/f5d2f2a9-8978-4abd-a226-e0596fa04c2a)
 
 ## Usage
 1. To set up the environment, `sh setup.sh`
